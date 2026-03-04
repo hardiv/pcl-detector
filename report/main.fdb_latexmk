@@ -1,14 +1,14 @@
 # Fdb version 4
-["bibtex main"] 1772587719.80019 "main.aux" "main.bbl" "main" 1772587748.32176 0
+["bibtex main"] 1772598995.51885 "main.aux" "main.bbl" "main" 1772598996.46018 0
   "./references.bib" 1772564048.88816 1712 5079a0efdad904a7bff3da27a6715265 ""
   "/usr/local/texlive/2025/texmf-dist/bibtex/bst/base/plain.bst" 1292289607 20613 bd3fbfa9f64872b81ac57a0dd2ed855f ""
-  "main.aux" 1772587748.13356 15689 788972a93d25c6e9ed65aa69db1c1f70 "pdflatex"
+  "main.aux" 1772598996.27447 17039 ad1bcfcf03e5e9aae88374820daa19d5 "pdflatex"
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["pdflatex"] 1772587747.75818 "/Users/hardivhk/_code/Imperial/Fourth Year/NLP/pcl-detector/report/main.tex" "main.pdf" "main" 1772587748.32189 0
-  "/Users/hardivhk/_code/Imperial/Fourth Year/NLP/pcl-detector/report/main.tex" 1772587747.5656 18223 f247edf44b0e958750561a962de2ce62 ""
+["pdflatex"] 1772598995.59195 "/Users/hardivhk/_code/Imperial/Fourth Year/NLP/pcl-detector/report/main.tex" "main.pdf" "main" 1772598996.46029 0
+  "/Users/hardivhk/_code/Imperial/Fourth Year/NLP/pcl-detector/report/main.tex" 1772598994.49906 19589 de4a51303425f0f316ef5c519c1dbba4 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
   "/usr/local/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1246382020 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
@@ -40,6 +40,7 @@
   "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb" 1248133631 32722 d7379af29a190c3f453aba36302ff5a9 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb" 1248133631 32362 179c33bbf43f19adbb3825bb4e36e57a ""
   "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb" 1248133631 32726 0a1aea6fcd6468ee2cf64d891f5c43c8 ""
+  "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb" 1248133631 32569 5e5ddc8df908dea60932f3c484a54c0d ""
   "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb" 1248133631 37944 359e864bd06cde3b1cf57bb20757fb06 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb" 1248133631 31099 c85edf1dd5b9e826d67c9c7293b6786c ""
   "/usr/local/texlive/2025/texmf-dist/tex/context/base/mkii/supp-pdf.mkii" 1461363279 71627 94eb9990bed73c364d7f53f960cc8c5b ""
@@ -107,9 +108,13 @@
   "/usr/local/texlive/2025/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1768233018 5467155 19efa205003f9ecad95fbbaa6ff24da1 ""
   "/usr/local/texlive/2025/texmf-var/web2c/pdftex/pdflatex.fmt" 1768233009 3345740 bfd046bb7ff8ffcde3902621b963d24a ""
   "/usr/local/texlive/2025/texmf.cnf" 1741450484 577 418a7058ec8e006d8704f60ecd22c938 ""
-  "main.aux" 1772587748.13356 15689 788972a93d25c6e9ed65aa69db1c1f70 "pdflatex"
-  "main.bbl" 1772587719.86493 552 55835f757954eec403e7dcbacf956a61 "bibtex main"
-  "main.tex" 1772587747.5656 18223 f247edf44b0e958750561a962de2ce62 ""
+  "figures/bigrams.png" 1772595909.56662 115016 afd6087f615385f8eb80ab055a8b2123 ""
+  "figures/log_odds.png" 1772595909.73153 72863 5dcc657e81ac7b891d0c92a1c704c279 ""
+  "figures/unigrams.png" 1772595909.358 89768 33bb3872cdfd8e7760bafd644cafdbff ""
+  "figures/wordcount_distribution.png" 1772595908.68855 44477 abe784eb357571ec6212326d3926a2ee ""
+  "main.aux" 1772598996.27447 17039 ad1bcfcf03e5e9aae88374820daa19d5 "pdflatex"
+  "main.bbl" 1772598995.5904 552 55835f757954eec403e7dcbacf956a61 "bibtex main"
+  "main.tex" 1772598994.49906 19589 de4a51303425f0f316ef5c519c1dbba4 ""
   (generated)
   "main.aux"
   "main.log"

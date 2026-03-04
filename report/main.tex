@@ -115,83 +115,152 @@ guiding future improvements\@.
 \section{Exercise 2: Exploratory Data Analysis (Stage 2)}\label{sec:eda}
 
 \subsection{EDA Setup}
-% Tools and libraries used
-% Preprocessing choices relevant for analysis (tokenisation, cleaning)
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-culpa qui officia deserunt mollit anim id est laborum.
+All analysis was performed in the Jupyter notebook (\texttt{main.ipynb}) found
+in the root of the repository. The labelled corpus comprises the SemEval-2022
+train and dev splits of the Don't Patronise Me dataset (10,469 paragraphs in
+total). Paragraphs with a graded label $\geq 2$ are treated as PCL-positive;
+those with labels 0--1 are PCL-negative. No tokeniser-specific preprocessing was
+applied during EDA\@; a simple lower-cased alphabetic-token regex was used for
+vocabulary and n-gram statistics to remain model-agnostic.
 
-\subsection{Technique 1: <Name>}
-% Example: Basic Statistical Profiling
+\subsection{Technique 1: Statistical Profiling}
+
 \subsubsection{Visual/Tabular Evidence}
-% Include a figure or table, e.g. class distribution, length histograms
-% Example:
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=0.7\textwidth]{figures/length_histogram.png}
-%     \caption{Distribution of input lengths in tokens.}
-%     \label{fig:length_hist}
-% \end{figure}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-culpa qui officia deserunt mollit anim id est laborum.
+
+Table~\ref{tab:vocab_stats} summarises vocabulary size, token count, and
+type-token ratio (TTR) for each class. Figure~\ref{fig:wordcount} shows the
+distribution of paragraph lengths in words, annotated with the 95th and 99th
+percentiles.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lrrrr}
+\toprule
+Class    & Paragraphs & Vocab  & Total tokens & TTR \\
+\midrule
+No PCL   & 9{,}476    & 27{,}572 & 404{,}702 & 0.068 \\
+PCL      & 993       & 7{,}627  & 47{,}615  & 0.160 \\
+Overall  & 10{,}469   & 29{,}046 & 452{,}317 & 0.064 \\
+\bottomrule
+\end{tabular}
+\caption{Vocabulary and token statistics per class.}\label{tab:vocab_stats}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{figures/wordcount_distribution.png}
+    \caption{Word-count distribution per class with p95 and p99
+    cut-offs.}\label{fig:wordcount}
+\end{figure}
 
 \subsubsection{Findings}
-% Brief description of what the figure/table shows
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-culpa qui officia deserunt mollit anim id est laborum.
+
+The dataset is heavily class-imbalanced: 91\% of labelled paragraphs are
+non-PCL, yielding a No-PCL\,:\,PCL ratio of roughly 9.5\,:\,1 (PCL accounts for
+$\sim$9.5\% of the corpus).  The PCL class has a notably higher TTR (0.160
+vs.\ 0.068), indicating greater lexical diversity per token, consistent with the
+more varied rhetorical strategies used to express condescending language.
+Furthermore, this PCL rate is not uniform across communities: an analysis of PCL
+density reveals that `in-need' and `homeless' have much higher PCL span counts
+than `immigrant', for example.
+
+Paragraph lengths are right-skewed: the median is around 45 words, but the 95th
+and 99th percentiles reach approximately 102 and 141 words respectively.
+
+A scan found no exact text duplicates and no train-dev leakage in the official
+splits.  Noise artefacts (HTML entities, non-ASCII characters, consecutive
+spaces) are present in a small fraction of paragraphs ($<$2\%), with no URLs
+detected.
 
 \subsubsection{Impact on Modelling}
-% Impact statement: how these findings affect:
-% - max sequence length
-% - sampling strategy
-% - model choice / training regime, etc.
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-culpa qui officia deserunt mollit anim id est laborum.
 
-\subsection{Technique 2: <Name>}
-% Example: Lexical / n-gram analysis, label-wise word frequencies, etc.
+\textbf{Class imbalance.}  A na\"\i ve classifier predicting ``No PCL'' always
+would achieve $\sim$91\% accuracy, making accuracy a misleading metric. Binary
+F\textsubscript{1} on the PCL class must be the primary evaluation criterion,
+and inverse-frequency class weights (or focal loss) should be applied during
+training to avoid the model collapsing to the majority class.
+
+\textbf{Sequence length.}  The p95 of 102 words maps to roughly 130--140
+subword tokens for RoBERTa; the p99 of 141 words maps to $\sim$185 tokens.
+Setting \texttt{max\_length=256} therefore covers the entire practical length
+distribution with comfortable headroom, while remaining half the cost of 512.
+A safe default is \texttt{max\_length=256} with truncation.
+
+\textbf{Noise.}  The low artefact rate means aggressive cleaning is unnecessary
+and risks removing meaningful content; simple whitespace normalisation is
+sufficient.
+
+\subsection{Technique 2: Lexical Analysis (N-gram Frequency \& Log-Odds)}
+
 \subsubsection{Visual/Tabular Evidence}
-% Another figure/table
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-culpa qui officia deserunt mollit anim id est laborum.
+
+Figures~\ref{fig:unigrams} and~\ref{fig:bigrams} show the top-20 unigrams and
+bigrams per class after English stop-word removal.
+Figure~\ref{fig:logodds} shows the 15 unigrams most enriched in each class by
+log-odds ratio.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{figures/unigrams.png}
+    \caption{Top-20 unigrams in PCL (orange) and No-PCL (blue) paragraphs.}\label{fig:unigrams}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{figures/bigrams.png}
+    \caption{Top-20 bigrams in PCL (orange) and No-PCL (blue) paragraphs.}\label{fig:bigrams}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{figures/log_odds.png}
+    \caption{Per-class unigram log-odds ratio; positive values indicate
+             over-representation in PCL, negative in No-PCL.}\label{fig:logodds}
+\end{figure}
 
 \subsubsection{Findings}
-% Brief description
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-culpa qui officia deserunt mollit anim id est laborum.
+
+Both classes share many high-frequency words (\textit{people, said, year}),
+confirming that surface term frequency alone gives little signal.  The log-odds
+analysis is more informative: PCL paragraphs are enriched with emotionally
+loaded and othering terms (\textit{little, help, poor, children, lives, hope})
+and phrases like ``living in poverty'' and ``the poorest'', directly reflecting
+the dataset's PCL categories of \textit{poverty} and
+\textit{over-generalisation}.  No-PCL paragraphs are enriched with neutral
+reporting language (\textit{government, health, percent, new}).  The overlap in
+the most frequent terms illustrates that PCL is driven by framing and semantic
+context rather than lexical presence alone.
+
+Critically, the n-gram distribution is not uniform across search keywords:
+communities such as \textit{homeless} and \textit{in-need} contribute
+disproportionately many high-PCL paragraphs, while keywords like
+\textit{immigrant} are predominantly non-PCL.  This creates a direct risk of
+label leakage via keyword identity: a model trained without controlling for
+keyword distribution could learn to predict ``PCL'' simply because the keyword
+\textit{homeless} appears, rather than due to any genuine condescension in the
+text.
 
 \subsubsection{Impact on Modelling}
-% Impact statement:
-% e.g., features to focus on, potential keyword biases, need for regularisation
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-culpa qui officia deserunt mollit anim id est laborum.
+
+\textbf{No keyword shortcuts.}  Because discriminative words (\textit{poor,
+help, children}) also appear frequently in non-patronising contexts, a
+bag-of-words classifier will struggle.  This motivates using a contextual model
+(e.g., RoBERTa) that encodes the surrounding sentence rather than isolated
+terms.
+
+\textbf{Keyword-stratified splitting.}  The uneven PCL rate across communities
+poses a concrete risk of label leakage.  To prevent the model learning
+community-specific shortcuts rather than semantic condescension, the internal
+validation split should be stratified on keyword in addition to label.  This
+ensures every keyword appears in both train and internal-dev folds, forcing the
+model to generalise across communities rather than memorising the PCL rate of a
+particular group.
+
+\textbf{Sequence length.}  Combining the finding from Technique~1 with the
+contextual nature of PCL, \texttt{max\_length=256} is adopted.  The p99 of 141
+words ($\sim$185 RoBERTa subword tokens) fits well within this budget, ensuring
+no paragraph in the labelled corpus is truncated in practice, while keeping
+memory cost well below the 512-token alternative.
 
 % --------------------------------------------------------------------
 \section{Exercise 3: Proposed Approach (Stage 3)}\label{sec:proposed_approach}
@@ -219,34 +288,11 @@ Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
 fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
 culpa qui officia deserunt mollit anim id est laborum.
 
-\subsection{Training Strategy}
-% Data splits: train / internal dev / official dev usage
-% Hyper-parameter strategy: LR, batch size, epochs, scheduler, etc.
-% Any special techniques: class weighting, focal loss, freezing layers, etc.
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-culpa qui officia deserunt mollit anim id est laborum.
-
 \subsection{Rationale and Expected Outcomes}
 % Justify why this deviates from baseline in a principled way
 % Hypotheses:
 % - Why it should outperform baseline
 % - Which aspects (architecture, data, training) you expect to matter most
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-culpa qui officia deserunt mollit anim id est laborum.
-
-\subsection{Implementation Details}
-% Any practical notes:
-% - Frameworks (PyTorch, HuggingFace Transformers, etc.)
-% - Hardware used
-% - Reproducibility notes aligning with your repository
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
 incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
 nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
