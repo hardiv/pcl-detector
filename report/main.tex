@@ -263,30 +263,24 @@ no paragraph in the labelled corpus is truncated in practice, while keeping
 memory cost well below the 512-token alternative.
 
 % --------------------------------------------------------------------
-\section{Exercise 3: Proposed Approach (Stage 3)}\label{sec:proposed_approach}
+\section{Exercise 3: Baseline and Proposed Approach (Stage
+3)}\label{sec:proposed_approach}
 
-\subsection{Baseline Description}
+\subsection{Proposed Approach}
 The organiser-provided baseline fine-tunes RoBERTa-base~\cite{liu2019roberta}
-for binary sequence classification: the \texttt{[CLS]} representation is passed
-through a linear head and optimised with standard cross-entropy, with no
-handling of class imbalance. It achieves $F_1 = 0.48$ on the dev set and $F_1 =
-0.49$ on the test set, where $F_1$ is measured on the positive (PCL) class only.
-
-\subsection{Model Architecture and Approach}
-We replace the encoder with
+with standard cross-entropy and no imbalance handling, achieving $F_1 = 0.48$ on
+the dev set. We replace the encoder with
 \texttt{microsoft/deberta-v3-base}~\cite{he2021debertav3}, whose disentangled
-attention encodes token content and relative position separately, better
-capturing the relational framing through which PCL operates; the classification
-head remains a linear layer on \texttt{[CLS]}. Cross-entropy is replaced with
-focal loss~\cite{lin2017focal} ($\gamma=2$) combined with inverse-frequency
-class weights ($w_{\text{PCL}}\approx9.5$), directly addressing the 9.5\,:\,1
-imbalance. The official train set ($N=8{,}839$) is split 90/10, stratified on
-both the PCL label and the search keyword to prevent keyword-prior shortcuts. We
-use \texttt{max\_length=256} (covers p99), AdamW at $lr=2\times10^{-5}$ with
-linear warm-up, batch size 16, 5 epochs, and early stopping (patience 2) on
+attention better captures the relational framing through which PCL operates.
+Cross-entropy is replaced with focal loss ($\gamma=2$) combined with
+inverse-frequency class weights ($w_{\text{PCL}}\approx9.5$) to address the
+9.5\,:\,1 imbalance. The official train set ($N=8{,}839$) is split 90/10,
+stratified on both label and search keyword to prevent keyword-prior shortcuts.
+We use \texttt{max\_length=256}, AdamW at $lr=2\times10^{-5}$ with linear
+warm-up, batch size 16, 5 epochs, and early stopping (patience 2) on
 internal-dev $F_1$.
 
-\subsection{Rationale and Expected Outcomes}
+\subsection{Rationale and Expected Outcome}
 Each deviation targets a documented baseline weakness. The paper review noted
 the absence of imbalance mitigation; with a 9.5\,:\,1 ratio the model is drawn
 towards the majority class, suppressing PCL recall --- focal loss with class
@@ -300,20 +294,28 @@ priors instead of genuine linguistic patterns. Together, the three deviations
 are expected to yield a dev-set $F_1$ meaningfully above~0.48; training takes
 approximately 20--30 minutes on a single GPU, well within the compute budget.
 
-% --------------------------------------------------------------------
-\section{Exercise 5.2: Local Evaluation and Error Analysis (Stage 5)}\label{sec:local_evaluation}
+\section{Exercise 4: Proposed Approach Implementation (Stage
+4)}\label{sec:implementation}
 
-\subsection{Error Analysis}
-% Describe:
-% - How you sampled errors (false positives/negatives)
-% - Examples of typical failure cases (paraphrased if needed)
-% - Qualitative patterns: sarcasm, subtle condescension, lexical shortcuts, etc.
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-culpa qui officia deserunt mollit anim id est laborum.
+Repository link on front page. You can inspect BestModel/.
+
+% --------------------------------------------------------------------
+\section{Exercise 5: Evaluation and Error Analysis (Stage
+5)}\label{sec:local_evaluation}
+
+\subsection{Global Evaluation}
+dev.txt and test.txt are available under eval/
+Leaderboard name on front page. You can inspect BestModel/ for predictions.
+
+\subsection{Local Evaluation}
+All local evaluation was performed in the Jupyter notebook (\texttt{main.ipynb})
+found in the root of the repository. The official dev set (1,630 paragraphs) was
+used for local evaluation, with the official test set reserved for final
+submission and leaderboard evaluation. Binary $F_1$ on the PCL class is the
+primary metric, with precision and recall also reported for a fuller picture of
+performance. The confusion matrix and precision-recall curve were also generated
+to analyse the trade-off between precision and recall at different thresholds,
+and to identify any systematic error patterns.
 
 % Example table:
 \begin{table}[H]
@@ -329,86 +331,20 @@ Example (paraphrased) & Gold & Pred & Error Type \\
 \caption{Illustrative error cases on the official dev set.}\label{tab:error_examples}
 \end{table}
 
-\subsection{Additional Local Evaluation}
-% E.g., ablation studies, calibration analysis, custom metrics
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-culpa qui officia deserunt mollit anim id est laborum.
+Ablation experiments were conducted to isolate the impact of each proposed
+deviation from the baseline. The following configurations were evaluated on the
+dev set:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Baseline:} RoBERTa-base with cross-entropy and no imbalance handling.
+    \item \textbf{+ DeBERTa-v3-base:} Replacing the encoder while keeping other settings the same.
+    \item \textbf{+ Focal Loss:} Adding focal loss with $\gamma=2$ and class weights to the DeBERTa model.
+    \item \textbf{+ Keyword Stratification:} Adding keyword-stratified splitting
+    to the previous configuration.
+\end{itemize}
+This stepwise ablation allows us to quantify the contribution of each component
+to the overall performance improvement, and to identify which modifications are
+most effective in addressing the specific challenges of PCL detection.
 
-\subsubsection{Ablation Studies}
-% Describe components removed/altered:
-% - e.g., without data cleaning, without class weighting, without extra pretraining
-% Present a small table of F1 scores per ablation.
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-culpa qui officia deserunt mollit anim id est laborum.
-
-\subsubsection{Alternative Metrics / Analyses}
-% E.g., confusion matrix, precision-recall curves, threshold analysis, subgroup
-% analysis
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-culpa qui officia deserunt mollit anim id est laborum.
-
-\subsection{Insights and Lessons Learned}
-% Summarise what you learned:
-% - Which design choices mattered most
-% - Failure modes that could guide future work
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-culpa qui officia deserunt mollit anim id est laborum.
-
-% --------------------------------------------------------------------
-\section{Exercise 6: Communication and Reporting (Stage 6)}\label{sec:communication}
-
-\subsection{Report and Repository Organisation}
-% Brief self-reflection:
-% - How you organised the repo (README, folder structure)
-% - How someone else can reproduce your results
-% - Any limitations of documentation due to time/compute
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-culpa qui officia deserunt mollit anim id est laborum.
-
-\subsection{Future Work}
-% Short section:
-% - Possible improvements, extensions, or new experiments
-% - Ideas for better handling difficult PCL cases
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-culpa qui officia deserunt mollit anim id est laborum.
-
-% --------------------------------------------------------------------
-\section{Conclusion}
-% 1--2 paragraphs bringing everything together:
-% - Task and approach
-% - Performance vs baseline
-% - Key insights from EDA and error analysis
-% - Takeaways about NLP research workflow
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-culpa qui officia deserunt mollit anim id est laborum.
 
 \bibliographystyle{plain}
 \bibliography{references} % Create references.bib as needed
