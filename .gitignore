@@ -2,3 +2,6 @@ report/main.aux
 report/main.fdb_latexmk
 report/main.log
 report/main.synctex.gz
+
+assets/*
+data/*
