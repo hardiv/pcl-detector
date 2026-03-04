@@ -1,0 +1,343 @@
+\documentclass[11pt,a4paper]{article}
+
+% Packages
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{bookmark}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue,
+    citecolor=blue
+}
+
+\title{Detecting Patronising and Condescending Language (PCL)\\
+Natural Language Processing Coursework Report}
+\author{Hardiv Harshakumar (hh1222)}
+\date{March 2026}
+
+\begin{document}
+
+\maketitle
+
+
+\noindent\textbf{GitHub/GitLab Repository:} \url{https://github.com/hardiv/pcl-detector}
+\\
+\noindent\textbf{Leaderboard Name:} TheOtherGoat
+
+\newpage
+
+% --------------------------------------------------------------------
+\section{Exercise 1: Critical Paper Review (Stage 1)}\label{sec:paper_review}
+
+\subsection{Q1. Primary Contributions}
+% Q1: Primary contributions of the PCL paper
+% - Problem addressed
+% - Main methods / resources introduced
+% - Key findings
+This paper~\cite{perez-almendros-etal-2020-dont} introduces the task of
+detecting patronising and condescending language (PCL) in text, particularly in
+the context of online news articles about vulnerable communities, which differs
+to traditional harmful language detection due to the usually subtler,
+well-intentioned and unconscious nature of PCL in this context.
+
+The paper's main contributions include the creation of a novel dataset (Don't
+Patronise Me) for PCL detection, which consists of news articles annotated for
+the presence of PCL\@. The paper also provides a baseline model using
+RoBERTa-base, achieving an F1 score of 0.53 on the official dev set. The paper's
+key findings highlight the challenges of detecting PCL, such as its subtlety and
+context-dependence, and the need for more sophisticated models to capture these
+nuances.
+
+\subsection{Q2. Technical Strengths}
+% Q2: Strengths justifying publication
+% - Novelty/originality
+% - Soundness of methodology and experiments
+% - Significance / impact for the NLP community
+The paper's main technical strength is the creation of a novel, high-quality
+dataset for PCL detection. The dataset is carefully curated and annotated,
+providing a solid foundation for future research in this area. The baseline
+RoBERTa model is well-chosen and provides a reasonable starting point for
+comparison. The experimental setup is sound, with appropriate train/dev/test
+splits and evaluation metrics.
+
+
+\subsection{Weaknesses and Limitations}
+% Q3: Weaknesses or insufficient evidence
+% - Experimental gaps, missing baselines, lack of ablations, etc.
+% - Dataset limitations or potential biases
+% - Clarity / reproducibility issues
+One weakness of the paper is the limited exploration of alternative models or
+architectures beyond the RoBERTa-base baseline. The paper could have included
+additional experiments with larger models or different architectures to provide
+a more comprehensive evaluation. Additionally, the paper does not discuss
+potential biases in the dataset, such as demographic biases or annotation
+inconsistencies, which could affect model performance and generalizability.
+Finally, while the paper provides a baseline implementation, it could have
+included more detailed documentation to enhance reproducibility.
+
+% --------------------------------------------------------------------
+\section{Exercise 2: Exploratory Data Analysis (Stage 2)}\label{sec:eda}
+
+\subsection{EDA Setup}
+% Tools and libraries used
+% Preprocessing choices relevant for analysis (tokenisation, cleaning)
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
+
+\subsection{Technique 1: <Name>}
+% Example: Basic Statistical Profiling
+\subsubsection{Visual/Tabular Evidence}
+% Include a figure or table, e.g. class distribution, length histograms
+% Example:
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.7\textwidth]{figures/length_histogram.png}
+%     \caption{Distribution of input lengths in tokens.}
+%     \label{fig:length_hist}
+% \end{figure}
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
+
+\subsubsection{Findings}
+% Brief description of what the figure/table shows
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
+
+\subsubsection{Impact on Modelling}
+% Impact statement: how these findings affect:
+% - max sequence length
+% - sampling strategy
+% - model choice / training regime, etc.
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
+
+\subsection{Technique 2: <Name>}
+% Example: Lexical / n-gram analysis, label-wise word frequencies, etc.
+\subsubsection{Visual/Tabular Evidence}
+% Another figure/table
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
+
+\subsubsection{Findings}
+% Brief description
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
+
+\subsubsection{Impact on Modelling}
+% Impact statement:
+% e.g., features to focus on, potential keyword biases, need for regularisation
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
+
+% --------------------------------------------------------------------
+\section{Exercise 3: Proposed Approach (Stage 3)}\label{sec:proposed_approach}
+
+\subsection{Baseline Description}
+% Briefly describe the RoBERTa-base baseline:
+% - Architecture, training setup (as much as needed)
+% - Reported F1 scores on dev/test
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
+
+\subsection{Model Architecture and Approach}
+% Clearly describe your approach:
+% - Base model(s) (e.g., RoBERTa-large, DeBERTa, etc.)
+% - Any architectural changes (layers, heads, classification head)
+% - Additional features (if any)
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
+
+\subsection{Training Strategy}
+% Data splits: train / internal dev / official dev usage
+% Hyper-parameter strategy: LR, batch size, epochs, scheduler, etc.
+% Any special techniques: class weighting, focal loss, freezing layers, etc.
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
+
+\subsection{Rationale and Expected Outcomes}
+% Justify why this deviates from baseline in a principled way
+% Hypotheses:
+% - Why it should outperform baseline
+% - Which aspects (architecture, data, training) you expect to matter most
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
+
+\subsection{Implementation Details}
+% Any practical notes:
+% - Frameworks (PyTorch, HuggingFace Transformers, etc.)
+% - Hardware used
+% - Reproducibility notes aligning with your repository
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
+
+% --------------------------------------------------------------------
+\section{Exercise 5.2: Local Evaluation and Error Analysis (Stage 5)}\label{sec:local_evaluation}
+
+\subsection{Error Analysis}
+% Describe:
+% - How you sampled errors (false positives/negatives)
+% - Examples of typical failure cases (paraphrased if needed)
+% - Qualitative patterns: sarcasm, subtle condescension, lexical shortcuts, etc.
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
+
+% Example table:
+\begin{table}[H]
+\centering
+\begin{tabular}{p{0.5\textwidth}ccc}
+\toprule
+Example (paraphrased) & Gold & Pred & Error Type \\
+\midrule
+& 1 & 0 & Missed subtle PCL \\
+& 0 & 1 & Over-triggered on keyword \\
+\bottomrule
+\end{tabular}
+\caption{Illustrative error cases on the official dev set.}\label{tab:error_examples}
+\end{table}
+
+\subsection{Additional Local Evaluation}
+% E.g., ablation studies, calibration analysis, custom metrics
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
+
+\subsubsection{Ablation Studies}
+% Describe components removed/altered:
+% - e.g., without data cleaning, without class weighting, without extra pretraining
+% Present a small table of F1 scores per ablation.
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
+
+\subsubsection{Alternative Metrics / Analyses}
+% E.g., confusion matrix, precision-recall curves, threshold analysis, subgroup
+% analysis
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
+
+\subsection{Insights and Lessons Learned}
+% Summarise what you learned:
+% - Which design choices mattered most
+% - Failure modes that could guide future work
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
+
+% --------------------------------------------------------------------
+\section{Exercise 6: Communication and Reporting (Stage 6)}\label{sec:communication}
+
+\subsection{Report and Repository Organisation}
+% Brief self-reflection:
+% - How you organised the repo (README, folder structure)
+% - How someone else can reproduce your results
+% - Any limitations of documentation due to time/compute
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
+
+\subsection{Future Work}
+% Short section:
+% - Possible improvements, extensions, or new experiments
+% - Ideas for better handling difficult PCL cases
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
+
+% --------------------------------------------------------------------
+\section{Conclusion}
+% 1--2 paragraphs bringing everything together:
+% - Task and approach
+% - Performance vs baseline
+% - Key insights from EDA and error analysis
+% - Takeaways about NLP research workflow
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
+
+\bibliographystyle{plain}
+\bibliography{references} % Create references.bib as needed
+
+\end{document}
