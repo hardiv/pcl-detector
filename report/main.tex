@@ -29,9 +29,8 @@ Natural Language Processing Coursework Report}
 \maketitle
 
 
-\noindent\textbf{GitHub/GitLab Repository:} \url{https://github.com/hardiv/pcl-detector}
-\\
-\noindent\textbf{Leaderboard Name:} TheOtherGoat
+\noindent\textbf{GitHub/GitLab Repository:}
+\url{https://github.com/hardiv/pcl-detector}
 
 \newpage
 
@@ -267,83 +266,93 @@ memory cost well below the 512-token alternative.
 3)}\label{sec:proposed_approach}
 
 \subsection{Proposed Approach}
-The organiser-provided baseline fine-tunes RoBERTa-base~\cite{liu2019roberta}
-with standard cross-entropy and no imbalance handling, achieving $F_1 = 0.48$ on
-the dev set. We replace the encoder with
-\texttt{microsoft/deberta-v3-base}~\cite{he2021debertav3}, whose disentangled
-attention better captures the relational framing through which PCL operates.
-Cross-entropy is replaced with focal loss ($\gamma=2$) combined with
-inverse-frequency class weights ($w_{\text{PCL}}\approx9.5$) to address the
-9.5\,:\,1 imbalance. The official train set ($N=8{,}839$) is split 90/10,
-stratified on both label and search keyword to prevent keyword-prior shortcuts.
-We use \texttt{max\_length=256}, AdamW at $lr=2\times10^{-5}$ with linear
-warm-up, batch size 16, 5 epochs, and early stopping (patience 2) on
-internal-dev $F_1$.
+The baseline fine-tunes RoBERTa-base~\cite{liu2019roberta} with standard cross-entropy and no
+imbalance handling ($F_1{=}0.48$). Our model makes five changes.
+
+\noindent\textbf{(1) DeBERTa-v3-base encoder~\cite{he2021debertav3}.} Disentangled attention
+encodes content and position separately, consistently outperforming RoBERTa-base on
+classification benchmarks.
+
+\noindent\textbf{(2) Focal loss ($\gamma{=}2$).} $\mathcal{L} =
+\frac{1}{N}\sum_i \alpha_{t_i}(1-p_{t_i})^2\,\mathrm{CE}(\log p_i, y_i)$, where
+$\alpha_1{=}\sqrt{N_0/N_1}\approx3\times$ is applied as a separate per-sample
+scalar (not via \texttt{cross\_entropy(weight=)}, which double-compensates). The
+focal factor is \emph{not detached}; detaching creates a degenerate fixed point
+at $p\approx0.41$ (verified analytically), causing $F_1{=}0$ throughout
+training.
+
+\noindent\textbf{(3) Prior bias init.} Classifier bias initialised to
+$[0,\log(N_\text{PCL}/N_\text{NoPCL})]\approx[0,-2.2]$, anchoring $p(\text{PCL})\approx0.095$
+at step~0 so focal gradients are correctly scaled from the first update.
+
+\noindent\textbf{(4) Layer-wise LR decay (LLRD, $\lambda{=}0.9$).}
+$\mathrm{lr}_k=\mathrm{lr}_\text{base}\times0.9^{L+1-k}$: the head trains at the full
+$2\times10^{-5}$; embeddings at $\approx5\times10^{-6}$, preserving pre-trained representations.
+
+\noindent\textbf{(5) Cosine schedule, keyword-stratified split, in-memory best-model tracking.}
+A 6\,\% warmup (113 steps) clears the ramp before the epoch-1 checkpoint (step~235), followed
+by cosine decay. The training set ($N{=}8{,}839$) is split 90/10 stratified by label and keyword.
+\texttt{BestF1Callback} snapshots \texttt{model.state\_dict()} on each val-$F_1$ improvement
+(patience~5) and restores it before evaluation. Training: effective batch~32
+(16$\times$grad-accum~2), \texttt{max\_length=256}, up to 8 epochs.
 
 \subsection{Rationale and Expected Outcome}
-Each deviation targets a documented baseline weakness. The paper review noted
-the absence of imbalance mitigation; with a 9.5\,:\,1 ratio the model is drawn
-towards the majority class, suppressing PCL recall --- focal loss with class
-weights addresses both the large ratio and the hard near-boundary examples
-(graded labels 2--3). DeBERTa-v3-base consistently outperforms RoBERTa-base on
-classification benchmarks and its disentangled attention more faithfully
-represents subtle relational cues, without the overfitting risk of larger
-variants flagged in Section~\ref{sec:paper_review}. Keyword stratification
-removes a confounding variable, preventing the model from learning keyword
-priors instead of genuine linguistic patterns. Together, the three deviations
-are expected to yield a dev-set $F_1$ meaningfully above~0.48; training takes
-approximately 20--30 minutes on a single GPU, well within the compute budget.
+The 9.5\,:\,1 imbalance draws cross-entropy models toward the majority class; focal loss with
+$\sqrt{\text{inverse-frequency}}$ weights addresses this, and the prior bias init ensures
+correct gradient scaling from step~0. DeBERTa-v3-base's disentangled attention better encodes
+the relational framing of PCL without the overfitting risk of larger variants
+(Section~\ref{sec:paper_review}). LLRD protects lower-layer representations critical for this
+pragmatics-heavy task. Keyword stratification prevents the model from learning community-specific
+PCL rates rather than genuine condescension. Together these five changes are expected to yield
+a dev-set $F_1$ meaningfully above~0.48.
 
 \section{Exercise 4: Proposed Approach Implementation (Stage
 4)}\label{sec:implementation}
 
-Repository link on front page. You can inspect BestModel/.
+Repository link on front page.
 
 % --------------------------------------------------------------------
 \section{Exercise 5: Evaluation and Error Analysis (Stage
 5)}\label{sec:local_evaluation}
 
 \subsection{Global Evaluation}
-dev.txt and test.txt are available under eval/
-Leaderboard name on front page. You can inspect BestModel/ for predictions.
+Omitted since results were not as expected; see next section for analysis.
 
 \subsection{Local Evaluation}
-All local evaluation was performed in the Jupyter notebook (\texttt{main.ipynb})
-found in the root of the repository. The official dev set (1,630 paragraphs) was
-used for local evaluation, with the official test set reserved for final
-submission and leaderboard evaluation. Binary $F_1$ on the PCL class is the
-primary metric, with precision and recall also reported for a fuller picture of
-performance. The confusion matrix and precision-recall curve were also generated
-to analyse the trade-off between precision and recall at different thresholds,
-and to identify any systematic error patterns.
 
-% Example table:
+Table~\ref{tab:results} summarises performance on the official dev set (2,094
+paragraphs).
+
 \begin{table}[H]
 \centering
-\begin{tabular}{p{0.5\textwidth}ccc}
+\begin{tabular}{lccc}
 \toprule
-Example (paraphrased) & Gold & Pred & Error Type \\
+Model & Precision & Recall & $F_1$ (PCL) \\
 \midrule
-& 1 & 0 & Missed subtle PCL \\
-& 0 & 1 & Over-triggered on keyword \\
+Baseline (RoBERTa-base, CE)        & ---   & ---   & 0.579 \\
+Proposed (DeBERTa-v3-base, Focal)  & 0.000 & 0.000 & 0.000 \\
 \bottomrule
 \end{tabular}
-\caption{Illustrative error cases on the official dev set.}\label{tab:error_examples}
+\caption{Dev-set results. Baseline exceeded its reported 0.48; proposed model
+collapsed.}\label{tab:results}
 \end{table}
 
-Ablation experiments were conducted to isolate the impact of each proposed
-deviation from the baseline. The following configurations were evaluated on the
-dev set:
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Baseline:} RoBERTa-base with cross-entropy and no imbalance handling.
-    \item \textbf{+ DeBERTa-v3-base:} Replacing the encoder while keeping other settings the same.
-    \item \textbf{+ Focal Loss:} Adding focal loss with $\gamma=2$ and class weights to the DeBERTa model.
-    \item \textbf{+ Keyword Stratification:} Adding keyword-stratified splitting
-    to the previous configuration.
-\end{itemize}
-This stepwise ablation allows us to quantify the contribution of each component
-to the overall performance improvement, and to identify which modifications are
-most effective in addressing the specific challenges of PCL detection.
+The proposed model degenerated into a constant \emph{No PCL} predictor (90.5\,\%
+accuracy, 0 true positives, 199 false negatives). The root cause is that
+\texttt{BestF1Callback} never recorded a positive val $F_1$, so
+\texttt{restore\_best()} was a no-op and the saved checkpoint reflects the fully
+collapsed state.  Likely contributors: (1)~the base LR of $2\times10^{-5}$ is
+too aggressive for DeBERTa-v3-base on a small dataset --- the original paper
+recommends $5\text{--}9\times10^{-6}$; (2)~the $\sqrt{\text{inverse-frequency}}$
+class weight ($\approx3\times$) may be insufficient to overcome the 9.5\,:\,1
+majority-class gradient pressure at batch size 32; (3)~the five changes were not
+validated jointly before full training.
+
+Given more time the priorities would be: reduce LR to $5\times10^{-6}$; raise
+the class-weight exponent to 0.75; add a 2-epoch sanity check monitoring mean
+$p(\text{PCL})$ before committing to full training; and introduce deviations one
+at a time to isolate any instability. The baseline result ($F_1{=}0.579 > 0.48$
+reported) confirms the evaluation pipeline is correct.
 
 
 \bibliographystyle{plain}

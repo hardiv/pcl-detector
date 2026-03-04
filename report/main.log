@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2026.1.12)  4 MAR 2026 10:17
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2026.1.12)  4 MAR 2026 18:24
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -403,7 +403,7 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 <figures/wordcount_distribution.png, id=30, 782.925pt x 275.5896pt>
 File: figures/wordcount_distribution.png Graphic file (type png)
 <use figures/wordcount_distribution.png>
-Package pdftex.def Info: figures/wordcount_distribution.png  used on input line 151.
+Package pdftex.def Info: figures/wordcount_distribution.png  used on input line 150.
 (pdftex.def)             Requested size: 385.02547pt x 135.52788pt.
 
 
@@ -411,12 +411,12 @@ Package pdftex.def Info: figures/wordcount_distribution.png  used on input line 
 <figures/unigrams.png, id=48, 1144.275pt x 420.1296pt>
 File: figures/unigrams.png Graphic file (type png)
 <use figures/unigrams.png>
-Package pdftex.def Info: figures/unigrams.png  used on input line 204.
+Package pdftex.def Info: figures/unigrams.png  used on input line 203.
 (pdftex.def)             Requested size: 452.9679pt x 166.31157pt.
 <figures/bigrams.png, id=49, 1143.3114pt x 420.1296pt>
 File: figures/bigrams.png Graphic file (type png)
 <use figures/bigrams.png>
-Package pdftex.def Info: figures/bigrams.png  used on input line 210.
+Package pdftex.def Info: figures/bigrams.png  used on input line 209.
 (pdftex.def)             Requested size: 452.9679pt x 166.4526pt.
 
 
@@ -424,7 +424,7 @@ Package pdftex.def Info: figures/bigrams.png  used on input line 210.
 <figures/log_odds.png, id=61, 782.925pt x 347.3778pt>
 File: figures/log_odds.png Graphic file (type png)
 <use figures/log_odds.png>
-Package pdftex.def Info: figures/log_odds.png  used on input line 216.
+Package pdftex.def Info: figures/log_odds.png  used on input line 215.
 (pdftex.def)             Requested size: 385.02547pt x 170.83147pt.
 
 
@@ -432,25 +432,25 @@ Package pdftex.def Info: figures/log_odds.png  used on input line 216.
 
 [6] (./main.bbl)
 
-[7{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}] (./main.aux)
+[7] (./main.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 12376 strings out of 473190
- 195255 string characters out of 5715800
- 600241 words of memory out of 5000000
- 35447 multiletter control sequences out of 15000+600000
- 567404 words of font info for 68 fonts, out of 8000000 for 9000
+ 12368 strings out of 473190
+ 195079 string characters out of 5715800
+ 601271 words of memory out of 5000000
+ 35441 multiletter control sequences out of 15000+600000
+ 567063 words of font info for 67 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,10n,79p,848b,442s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/cm-super/sfrm1095.pfb>
-Output written on main.pdf (7 pages, 486974 bytes).
+ 75i,9n,79p,848b,442s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
+Output written on main.pdf (7 pages, 509567 bytes).
 PDF statistics:
- 224 PDF objects out of 1000 (max. 8388607)
- 181 compressed objects within 2 object streams
+ 234 PDF objects out of 1000 (max. 8388607)
+ 187 compressed objects within 2 object streams
  39 named destinations out of 1000 (max. 500000)
  189 words of extra memory for PDF output out of 10000 (max. 10000000)
 
