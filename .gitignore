@@ -6,3 +6,5 @@ report/main.synctex.gz
 assets/*
 data/*
 .DS_Store
+__MACOSX/*
+data/train/dontpatronizeme_categories.tsv
