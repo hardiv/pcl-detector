@@ -51,24 +51,35 @@ well-intentioned and unconscious nature of PCL in this context.
 
 The paper's main contributions include the creation of a novel dataset (Don't
 Patronise Me) for PCL detection, which consists of 10,637 paragraphs about
-social groups news articles annotated for
-the presence of PCL\@. The paper also provides a baseline model using
-RoBERTa-base, achieving an F1 score of 0.53 on the official dev set. The paper's
-key findings highlight the challenges of detecting PCL, such as its subtlety and
-context-dependence, and the need for more sophisticated models to capture these
-nuances.
+vulnerable social groups selected from news articles annotated for the presence
+and type of PCL, both at an overall and a more local text-span level\@.
+
+The paper also establishes experimental baselines across SVM models, BiLSTM
+models and fine-tuned transformers such as BERT, RoBERTa and DistilBERT for
+binary and multi-label classification of PCL\@.
 
 \subsection{Q2. Technical Strengths}
 % Q2: Strengths justifying publication
 % - Novelty/originality
 % - Soundness of methodology and experiments
 % - Significance / impact for the NLP community
-The paper's main technical strength is the creation of a novel, high-quality
-dataset for PCL detection. The dataset is carefully curated and annotated,
-providing a solid foundation for future research in this area. The baseline
-RoBERTa model is well-chosen and provides a reasonable starting point for
-comparison. The experimental setup is sound, with appropriate train/dev/test
-splits and evaluation metrics.
+The dataset is carefully curated and annotated, and draws from multiple news
+sources across 20 countries over a span of 8 years. It employs the Kappa
+Inter-Annotator Agreement (IAA) between two annotators (and a third mediating
+annotator) to give way to a 5-point scale for labels to address the subjective
+nature of identifying PCL\@.
+
+The experimental setup is sound, with appropriate train/dev/test splits and
+evaluation metrics.
+
+The baseline RoBERTa model is well-chosen and provides a reasonable starting
+point for comparison. With an $F_1$ score of 70.63 on Task 1, it demonstrates
+that PCL can be detected, despite its subtlety.
+
+The paper does also identify areas for improvement, such as model failure modes
+where knowledge gaps due to world knowledge or commonsense reasoning are
+required, and the need for better handling of class imbalance and more
+fine-grained PCL types, which can guide future work in this area\@.
 
 
 \subsection{Weaknesses and Limitations}
@@ -76,14 +87,29 @@ splits and evaluation metrics.
 % - Experimental gaps, missing baselines, lack of ablations, etc.
 % - Dataset limitations or potential biases
 % - Clarity / reproducibility issues
-One weakness of the paper is the limited exploration of alternative models or
-architectures beyond the RoBERTa-base baseline. The paper could have included
-additional experiments with larger models or different architectures to provide
-a more comprehensive evaluation. Additionally, the paper does not discuss
-potential biases in the dataset, such as demographic biases or annotation
-inconsistencies, which could affect model performance and generalizability.
-Finally, while the paper provides a baseline implementation, it could have
-included more detailed documentation to enhance reproducibility.
+
+Whilst care has been taken in the annotation process to avoid subjectivity,
+around 14\% of the labels were disagreed upon by the two annotators, which
+suggests that the task is inherently subjective and may require more annotators,
+as biases and annotation inconsistencies could affect model performance and
+generalisability.
+
+In addition, multi-label performance is diminished by severe category imbalance;
+the label \"unbalanced power relations\" has 1,307 spans versus only 64 for
+\"the poorer, the merrier\", which contributes to near-zero performance on
+underrepresented categories. The authors propose using category labels as
+privileged information but no ablation or empirical validation of this claim is
+provided.
+
+The paper goes on to suggest that BERT-large has overfitted on the small
+training dataset, leading it to underperform BERT-base and BiLSTM in Task 1;
+this suggestion lacks investigation of regularisation or alternative fine-tuning
+strategies to address overfitting.
+
+The paper also lacks formal interpretability analysis, such as SHAP and LIME, to
+verify whether the model learns meaningful patterns or is relying on spurious
+correlations, which would be useful for understanding model behaviour and
+guiding future improvements\@.
 
 % --------------------------------------------------------------------
 \section{Exercise 2: Exploratory Data Analysis (Stage 2)}\label{sec:eda}
