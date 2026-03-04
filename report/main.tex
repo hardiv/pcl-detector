@@ -180,15 +180,15 @@ F\textsubscript{1} on the PCL class must be the primary evaluation criterion,
 and inverse-frequency class weights (or focal loss) should be applied during
 training to avoid the model collapsing to the majority class.
 
-\textbf{Sequence length.}  The p95 of 102 words maps to roughly 130--140
-subword tokens for RoBERTa; the p99 of 141 words maps to $\sim$185 tokens.
-Setting \texttt{max\_length=256} therefore covers the entire practical length
-distribution with comfortable headroom, while remaining half the cost of 512.
-A safe default is \texttt{max\_length=256} with truncation.
+\noindent\textbf{Sequence length.}  The p95 of 102 words maps to roughly
+130--140 subword tokens for RoBERTa; the p99 of 141 words maps to $\sim$185
+tokens. Setting \texttt{max\_length=256} therefore covers the entire practical
+length distribution with comfortable headroom, while remaining half the cost of
+512. A safe default is \texttt{max\_length=256} with truncation.
 
-\textbf{Noise.}  The low artefact rate means aggressive cleaning is unnecessary
-and risks removing meaningful content; simple whitespace normalisation is
-sufficient.
+\noindent\textbf{Noise.}  The low artefact rate means aggressive cleaning is
+unnecessary and risks removing meaningful content; simple whitespace
+normalisation is sufficient.
 
 \subsection{Technique 2: Lexical Analysis (N-gram Frequency \& Log-Odds)}
 
@@ -248,7 +248,7 @@ bag-of-words classifier will struggle.  This motivates using a contextual model
 (e.g., RoBERTa) that encodes the surrounding sentence rather than isolated
 terms.
 
-\textbf{Keyword-stratified splitting.}  The uneven PCL rate across communities
+\noindent\textbf{Keyword-stratified splitting.}  The uneven PCL rate across communities
 poses a concrete risk of label leakage.  To prevent the model learning
 community-specific shortcuts rather than semantic condescension, the internal
 validation split should be stratified on keyword in addition to label.  This
@@ -256,7 +256,7 @@ ensures every keyword appears in both train and internal-dev folds, forcing the
 model to generalise across communities rather than memorising the PCL rate of a
 particular group.
 
-\textbf{Sequence length.}  Combining the finding from Technique~1 with the
+\noindent\textbf{Sequence length.}  Combining the finding from Technique~1 with the
 contextual nature of PCL, \texttt{max\_length=256} is adopted.  The p99 of 141
 words ($\sim$185 RoBERTa subword tokens) fits well within this budget, ensuring
 no paragraph in the labelled corpus is truncated in practice, while keeping
@@ -266,39 +266,39 @@ memory cost well below the 512-token alternative.
 \section{Exercise 3: Proposed Approach (Stage 3)}\label{sec:proposed_approach}
 
 \subsection{Baseline Description}
-% Briefly describe the RoBERTa-base baseline:
-% - Architecture, training setup (as much as needed)
-% - Reported F1 scores on dev/test
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-culpa qui officia deserunt mollit anim id est laborum.
+The organiser-provided baseline fine-tunes RoBERTa-base~\cite{liu2019roberta}
+for binary sequence classification: the \texttt{[CLS]} representation is passed
+through a linear head and optimised with standard cross-entropy, with no
+handling of class imbalance. It achieves $F_1 = 0.48$ on the dev set and $F_1 =
+0.49$ on the test set, where $F_1$ is measured on the positive (PCL) class only.
 
 \subsection{Model Architecture and Approach}
-% Clearly describe your approach:
-% - Base model(s) (e.g., RoBERTa-large, DeBERTa, etc.)
-% - Any architectural changes (layers, heads, classification head)
-% - Additional features (if any)
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-culpa qui officia deserunt mollit anim id est laborum.
+We replace the encoder with
+\texttt{microsoft/deberta-v3-base}~\cite{he2021debertav3}, whose disentangled
+attention encodes token content and relative position separately, better
+capturing the relational framing through which PCL operates; the classification
+head remains a linear layer on \texttt{[CLS]}. Cross-entropy is replaced with
+focal loss~\cite{lin2017focal} ($\gamma=2$) combined with inverse-frequency
+class weights ($w_{\text{PCL}}\approx9.5$), directly addressing the 9.5\,:\,1
+imbalance. The official train set ($N=8{,}839$) is split 90/10, stratified on
+both the PCL label and the search keyword to prevent keyword-prior shortcuts. We
+use \texttt{max\_length=256} (covers p99), AdamW at $lr=2\times10^{-5}$ with
+linear warm-up, batch size 16, 5 epochs, and early stopping (patience 2) on
+internal-dev $F_1$.
 
 \subsection{Rationale and Expected Outcomes}
-% Justify why this deviates from baseline in a principled way
-% Hypotheses:
-% - Why it should outperform baseline
-% - Which aspects (architecture, data, training) you expect to matter most
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-culpa qui officia deserunt mollit anim id est laborum.
+Each deviation targets a documented baseline weakness. The paper review noted
+the absence of imbalance mitigation; with a 9.5\,:\,1 ratio the model is drawn
+towards the majority class, suppressing PCL recall --- focal loss with class
+weights addresses both the large ratio and the hard near-boundary examples
+(graded labels 2--3). DeBERTa-v3-base consistently outperforms RoBERTa-base on
+classification benchmarks and its disentangled attention more faithfully
+represents subtle relational cues, without the overfitting risk of larger
+variants flagged in Section~\ref{sec:paper_review}. Keyword stratification
+removes a confounding variable, preventing the model from learning keyword
+priors instead of genuine linguistic patterns. Together, the three deviations
+are expected to yield a dev-set $F_1$ meaningfully above~0.48; training takes
+approximately 20--30 minutes on a single GPU, well within the compute budget.
 
 % --------------------------------------------------------------------
 \section{Exercise 5.2: Local Evaluation and Error Analysis (Stage 5)}\label{sec:local_evaluation}

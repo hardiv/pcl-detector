@@ -1,5 +1,20 @@
 \begin{thebibliography}{1}
 
+\bibitem{he2021debertav3}
+Pengcheng He, Jianfeng Gao, and Weizhu Chen.
+\newblock Debertav3: Improving deberta using electra-style pre-training with gradient-disentangled embedding sharing.
+\newblock {\em arXiv preprint arXiv:2111.09543}, 2021.
+
+\bibitem{lin2017focal}
+Tsung-Yi Lin, Priya Goyal, Ross Girshick, Kaiming He, and Piotr Doll{\'a}r.
+\newblock Focal loss for dense object detection.
+\newblock In {\em Proceedings of the IEEE International Conference on Computer Vision (ICCV)}, pages 2980--2988, 2017.
+
+\bibitem{liu2019roberta}
+Yinhan Liu, Myle Ott, Naman Goyal, Jingfei Du, Mandar Joshi, Danqi Chen, Omer Levy, Mike Lewis, Luke Zettlemoyer, and Veselin Stoyanov.
+\newblock Roberta: A robustly optimized bert pretraining approach.
+\newblock {\em arXiv preprint arXiv:1907.11692}, 2019.
+
 \bibitem{perez-almendros-etal-2020-dont}
 Carla Perez~Almendros, Luis Espinosa~Anke, and Steven Schockaert.
 \newblock Don{'}t patronize me! an annotated dataset with patronizing and condescending language towards vulnerable communities.
